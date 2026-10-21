@@ -1,0 +1,208 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "trigger": [
+          "message"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C0CATE3S3U5",
+          "mode": "list",
+          "cachedResultName": "ai-test"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a76efd0f-4513-4eb6-9b9e-08764b6eb985",
+      "name": "Slack Trigger",
+      "webhookId": "3627950a-b499-4652-97b1-c6c3a42ee98c",
+      "credentials": {
+        "slackApi": {
+          "id": "jCVXeiOChu2TTVV8",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.blocks[0].elements[0].elements[0].text }}\nList all the products and ingredients needed to make {{ $json.blocks[0].elements[0].elements[0].text }}.\nReturn a clear bullet list with approximate quantities. Keep it short and practical. Think like a south indian people way to make recipe\n\nIf the recipe name is unclear,\nask the user to rephrase it.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "c5af8dfe-7a9c-4676-8317-ec30ae0307ab",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        192
+      ],
+      "id": "18cb6345-0c4a-44e7-8160-99fdd6f113be",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "7ZsrMzpE6UwfZ8AX",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0CATE3S3U5",
+          "mode": "list",
+          "cachedResultName": "ai-test"
+        },
+        "text": "={{ $json.text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        816,
+        0
+      ],
+      "id": "8f1b93ef-4488-4b40-8559-a74b15f94295",
+      "name": "Send a message",
+      "webhookId": "b95938d0-31f6-437f-bc61-d2cc86c4372f",
+      "credentials": {
+        "slackApi": {
+          "id": "jCVXeiOChu2TTVV8",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5d1d516f-f526-406b-a8fe-0b5983e1a813",
+              "leftValue": "={{ $json.bot_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b8e57f27-58f5-4fbd-85e9-7747c4aa4ac0",
+              "leftValue": "={{ $json.subtype }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a27071b2-e285-4720-b431-4dd295e1067e",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Slack Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6aa62c00-a67b-464a-a008-56abc3ebdf5e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0262bee3e72d4226c7df4168000ce67c07789c5afa7518cd7152d5afb61f2a34"
+  },
+  "nodeGroups": [],
+  "id": "4yqoqV9yAClWsNhy",
+  "tags": []
+}

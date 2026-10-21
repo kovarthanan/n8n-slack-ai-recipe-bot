@@ -1,0 +1,33 @@
+# Secrets & API keys — never commit these
+.env
+.env.*
+*.env
+*.pem
+*.key
+credentials*.json
+secrets*.json
+
+# n8n local data (if running n8n locally in this folder)
+.n8n/
+n8n_data/
+*.sqlite
+*.sqlite3
+database.sqlite*
+
+# Node / dependencies
+node_modules/
+npm-debug.log*
+
+# Logs & temp files
+*.log
+*.tmp
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
